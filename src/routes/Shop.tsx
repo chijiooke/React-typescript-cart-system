@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useQuery } from "react-query";
 //components
 import { Drawer, Badge, Grid, LinearProgress } from "@material-ui/core";
@@ -8,6 +8,10 @@ import { Link } from "react-router-dom";
 import { Wrapper } from "../AppStyles";
 import ProductItems from "../products/ProductItems";
 import LoadingError from "../routes/LoadingError";
+import { DataContext } from "../App";
+//context
+// import DataContext from '../ProductContext';
+
 //types
 export type CartProductItem = {
   id: number;
@@ -18,6 +22,7 @@ export type CartProductItem = {
   image: string;
   amount: string;
 };
+
 const getProducts = (): Promise<CartProductItem[]> =>
   fetch("https://fakestoreapi.com/products").then((res) => res.json());
 
@@ -27,9 +32,17 @@ const Products = () => {
     getProducts
   );
 
-  const getTotalItems = () => null;
+  const myProductData = useContext(DataContext);
+  useEffect(() => {
+    if (data !== undefined) {
+      myProductData?.setProduct(data);
+      console.log("my product", myProductData?.product);
+    }
+  }, [myProductData, data]);
+
   const addToCart = (item: CartProductItem) => null;
-  const removeFromCart = () => null;
+  // const getTotalItems = () => null;
+  // const removeFromCart = () => null;
 
   if (isLoading) return <LinearProgress />;
   if (error) return <LoadingError />;
